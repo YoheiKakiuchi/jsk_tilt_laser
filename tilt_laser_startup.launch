@@ -1,0 +1,11 @@
+<launch>
+  <param name="robot_description" textfile="$(find jsk_tilt_laser)/tilt_laser.urdf" />
+  <node name="tilt_robot_state_publisher" pkg="robot_state_publisher"
+        type="state_publisher" />
+
+  <include file="$(find jsk_tilt_laser)/dynamixel.launch" />
+  <include file="$(find jsk_tilt_laser)/start_urg.launch" />
+
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find jsk_tilt_laser)/jsk_tilt_laser.rviz" />
+</launch>
