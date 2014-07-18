@@ -12,7 +12,7 @@ class AssembleCaller:
     min_angle = None
     lower_threshold = None
     upper_threshold = None
-    scan_time = None
+    scan_time = None ###
 
     def init(self):
         rospy.init_node('test_assemble')
@@ -22,15 +22,19 @@ class AssembleCaller:
         self.assemble_srv = rospy.ServiceProxy('assemble_scans2', AssembleScans2)
 
         if not self.max_angle:
-            self.max_angle = 0.7
+#            self.max_angle = 0.7
+            self.max_angle = 0.5
+
         if not self.min_angle:
-            self.min_angle = -0.95
+#            self.min_angle = -0.95
+            self.min_angle = -0.9
+
         if not self.scan_time:
             self.scan_time = 10.0
         if not self.lower_threshold:
-            self.lower_threshold = self.min_angle + 0.05
+            self.lower_threshold = self.min_angle + 0.01
         if not self.upper_threshold:
-            self.upper_threshold = self.max_angle - 0.05
+            self.upper_threshold = self.max_angle - 0.01
 
     def move_to_angle(self, angle):
         self.command_pub.publish(std_msgs.msg.Float64(angle))
@@ -39,16 +43,17 @@ class AssembleCaller:
         pos = None
         try:
             pos = msg.position[msg.name.index('tilt_joint')]
-            ##print 'pos %f'%pos
+            print 'pos = %f'%pos
         except:
-            print 'exept'
+            # do nothing
+            rospy.debug('exept')
 
         if pos:
             if not self.prev_angle:
                 self.prev_angle = pos
                 return
             if pos > self.max_angle:
-                self.move_to_angle(self.min_angle - 0.02)
+                self.move_to_angle(self.min_angle - 0.01)
 
             if self.prev_angle < self.upper_threshold and pos > self.upper_threshold:
                 self.scan_and_publish(self.scan_time)
@@ -57,7 +62,7 @@ class AssembleCaller:
                 self.scan_and_publish(self.scan_time)
 
             if pos < self.min_angle:
-                self.move_to_angle(self.max_angle + 0.02)
+                self.move_to_angle(self.max_angle + 0.01)
 
             self.prev_angle = pos
 
@@ -67,12 +72,14 @@ class AssembleCaller:
         req = AssembleScans2Request()
         req.begin = rospy.Time.from_sec(tm.to_sec() - sec)
         req.end = tm
-
-        ret = self.assemble_srv(req.begin, req.end)
-        ## print ret.cloud
-        if ret:
-            print 'publish'
-            self.cloud_pub.publish(ret.cloud)
+        try:
+            ret = self.assemble_srv(req.begin, req.end)
+            if ret:
+                print 'publish'
+                self.cloud_pub.publish(ret.cloud)
+        except:
+            # do nothing
+            rospy.debug('error calling service')
 
     def spin(self):
         rospy.spin()
