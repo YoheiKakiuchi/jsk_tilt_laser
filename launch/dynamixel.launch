@@ -13,7 +13,7 @@
         </rosparam>
     </node>
     <!-- Start tilt joint controller -->
-    <rosparam file="$(find jsk_tilt_laser)/tilt.yaml" command="load"/>
+    <rosparam file="$(find jsk_tilt_laser)/config/tilt_controller_config.yaml" command="load"/>
     <node name="tilt_controller_spawner" pkg="dynamixel_controllers"
           type="controller_spawner.py"
           args="--manager=dxl_manager
