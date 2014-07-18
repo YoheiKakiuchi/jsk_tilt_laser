@@ -22,15 +22,13 @@ class AssembleCaller:
         self.assemble_srv = rospy.ServiceProxy('assemble_scans2', AssembleScans2)
 
         if not self.max_angle:
-#            self.max_angle = 0.7
-            self.max_angle = 0.5
+            self.max_angle = 0.71
 
         if not self.min_angle:
-#            self.min_angle = -0.95
-            self.min_angle = -0.9
+            self.min_angle = -0.96
 
         if not self.scan_time:
-            self.scan_time = 10.0
+            self.scan_time = 8.0
         if not self.lower_threshold:
             self.lower_threshold = self.min_angle + 0.01
         if not self.upper_threshold:

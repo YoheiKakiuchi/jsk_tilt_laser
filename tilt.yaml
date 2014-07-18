@@ -7,7 +7,7 @@ tilt_controller:
 #    joint_speed: 2.33 ##
 #    joint_speed: 0.233 ##
 #    joint_speed: 0.166 ##
-    joint_speed: 0.083 ## rad/sec ...
+    joint_speed: 0.207 ## rad/sec ...
     motor:
         id: 1
         init: 2048
