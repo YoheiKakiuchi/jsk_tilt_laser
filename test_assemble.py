@@ -22,17 +22,17 @@ class AssembleCaller:
         self.assemble_srv = rospy.ServiceProxy('assemble_scans2', AssembleScans2)
 
         if not self.max_angle:
-            self.max_angle = 0.71
+            self.max_angle = 0.70
 
         if not self.min_angle:
-            self.min_angle = -0.96
+            self.min_angle = -0.95
 
         if not self.scan_time:
             self.scan_time = 8.0
         if not self.lower_threshold:
-            self.lower_threshold = self.min_angle + 0.01
+            self.lower_threshold = self.min_angle
         if not self.upper_threshold:
-            self.upper_threshold = self.max_angle - 0.01
+            self.upper_threshold = self.max_angle
 
     def move_to_angle(self, angle):
         self.command_pub.publish(std_msgs.msg.Float64(angle))
@@ -49,6 +49,10 @@ class AssembleCaller:
         if pos:
             if not self.prev_angle:
                 self.prev_angle = pos
+                if pos - self.min_angle > self.max_angle - pos:
+                    self.move_to_angle(self.max_angle + 0.01)
+                else:
+                    self.move_to_angle(self.min_angle - 0.01)
                 return
             if pos > self.max_angle:
                 self.move_to_angle(self.min_angle - 0.01)
