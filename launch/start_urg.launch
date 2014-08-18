@@ -1,5 +1,5 @@
 <launch>
-  <node pkg="urg_node" name="urg_test" type="urg_node"
+  <node pkg="urg_node" name="urg_device" type="urg_node"
         output="screen" >
     <param name="ip_address" value="192.168.0.10" />
     <!--param name="angle_min" value="-2.35619" />
